@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Countdown</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f8ff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .countdown {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ff4500;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .birthday-wish, .image-slide, .cake-container, .wish-container {
+            display: none;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .birthday-wish {
+            font-size: 2.5em;
+            color: #32cd32;
+        }
+        .image-slide img {
+            width: 200px;
+            margin-top: 20px;
+        }
+        .open-gift-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #32cd32;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .open-gift-button:hover {
+            background-color: #28a428;
+        }
+        .cake {
+            margin-top: 20px;
+            position: relative;
+        }
+        .cake img {
+            width: 200px;
+        }
+        .wish-container {
+            margin-top: 20px;
+        }
+        #wish-display {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #ff4500;
+        }
+        #wish-displays {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #f60bcf;
+        }
+        #namm {
+                color: #f60bcf;
+        }
+        @media (max-width: 600px) {
+            .countdown, .birthday-wish {
+                font-size: 1.5em;
+                padding: 15px;
+            }
+            .open-gift-button {
+                padding: 10px;
+                font-size: 0.8em;
+            }
+        }
+        .marquee {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            box-sizing: border-box;
+            animation: marquee 10s linear infinite;
+        }
+
+        @keyframes marquee {
+            0%   { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .blink {
+            animation: blink 1s step-start infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown">10</div>
+    <div class="birthday-wish"> 
+        <div class="marquee blink">Happy Birthday!</div>
+        <span id = "namm">OLUWATOBILOBA JOSEPH OJELADE</span> 
+    </div>
+    <br>
+    <div class="image-slide">
+        <img id="slide-image" src="https://via.placeholder.com/150" alt="Birthday Celebration">
+        <button class="open-gift-button" onclick="showCake()" id = "lopp">Open Gift</button>
+        <p id="wish-displays"></p>
+    </div>
+    <div class="cake-container">
+        <div class="cake">
+            <img id="cake-image" src="cake.jpg" alt="Cake with Candle">
+        </div>
+        <div class="wish-container">
+            <input type="text" id="wish-input" placeholder="Make a wish...">
+            <button class="open-gift-button" onclick="makeWish()">Submit</button>
+            <p id="wish-display"></p>
+        </div>
+    </div>
+
+    <script>
+        const images = [
+            'https://scontent.flos5-2.fna.fbcdn.net/v/t39.30808-6/308918749_5581049368623828_6972189900964562525_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHo9eRQpV0Kj28T1HGXCKSHuUOQ3N95RcG5Q5Dc33lFwfVxQCGJlZoK7tJJzg9RNHZIl9_mAzQAE1Epgol9OFyG&_nc_ohc=2UZwDmyIQc0Q7kNvgHA3mg8&_nc_zt=23&_nc_ht=scontent.flos5-2.fna&oh=00_AYBrnMA_1VsbcLFGYyA8RG365_lKFHIDq7uxCncb0XxjyQ&oe=6696B643',
+            'https://scontent.flos5-1.fna.fbcdn.net/v/t39.30808-6/293201811_5367912269937540_7981649907732641113_n.jpg?stp=cp6_dst-jpg&_nc_cat=110&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeHBr3UBUk6qnWjbP8MPPdFIBFhOuBxtkwIEWE64HG2TAp_YTVfWXZzQSsVuhHiNvT6t63GcGuDHpRgGYfQ-3uQH&_nc_ohc=UnOFb7bVrj8Q7kNvgFQt2TM&_nc_zt=23&_nc_ht=scontent.flos5-1.fna&oh=00_AYAK39o_sSOLYsjz6mw_NOV0OKNqSxzQZ1fXcSupjLYLIw&oe=6696CB0C',
+            'https://scontent.flos5-2.fna.fbcdn.net/v/t39.30808-6/240526967_4386987694696674_241628575865705247_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeH8wyKOLl7oHHfoAQfQzhkZRDU2opl5VpZENTaimXlWlgm5IsO7vLA2W0k3CDFZjFhZyg4Q9wDnB5vt1wmLMucU&_nc_ohc=Zi7b5Ej4XFoQ7kNvgGIcRlV&_nc_zt=23&_nc_ht=scontent.flos5-2.fna&oh=00_AYCE0HfIwmETuyo-8_ir9r-L3KBo5OaLqsojtoKNGlEOdQ&oe=6696AECA',
+            'https://scontent.flos5-2.fna.fbcdn.net/v/t39.30808-6/215933201_4240702549325190_2110035472222157458_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeG60Aa_I3AHwA45eq3B6ole4vgjqOtNt-Di-COo60234OwcmP7678WsKAFSadsQdnm6DQVKRjIO3-V6x98kEfG-&_nc_ohc=dBC1Vo9FM8AQ7kNvgEb6cq5&_nc_zt=23&_nc_ht=scontent.flos5-2.fna&oh=00_AYA4KdTT0OEpsf0pdxekbw4ooZbyXDI7DQPF9tomy8-ERw&oe=6696D3A0',
+            'https://scontent.flos5-1.fna.fbcdn.net/v/t39.30808-6/214634175_4239782009417244_8470028629110777755_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeEBtpNnx4gpOEcKp5v7_R-y9PDdr6LVeUT08N2votV5RGStMCnhZ94GH8TrMjX6oXGeMmOdn0rF8yOxy_J48QpG&_nc_ohc=ZOszcTOAxJgQ7kNvgEQQq4M&_nc_zt=23&_nc_ht=scontent.flos5-1.fna&oh=00_AYB9etQJsJClHeQ2sy6QCPZFilsXBp3PbDZ5tBVC72cdVA&oe=6696A424'
+        ];
+        let currentImageIndex = 0;
+        let countdown = 10;
+
+        const countdownElement = document.querySelector('.countdown');
+        const birthdayWishElement = document.querySelector('.birthday-wish');
+        const imageSlideElement = document.querySelector('.image-slide');
+        const slideImageElement = document.getElementById('slide-image');
+        const cakeContainerElement = document.querySelector('.cake-container');
+        const wishContainerElement = document.querySelector('.wish-container');
+        const wishDisplayElement = document.getElementById('wish-display');
+        const wishDisplayElements = document.getElementById('wish-displays');
+        const cakeImageElement = document.getElementById('cake-image');
+        const loppElement = document.getElementById('lopp');
+
+        let interval = setInterval(() => {
+            countdownElement.innerHTML = countdown;
+            countdown--;
+            if (countdown < 0) {
+                clearInterval(interval);
+                countdownElement.style.display = 'none';
+                birthdayWishElement.style.display = 'block';
+                setTimeout(() => {
+                    imageSlideElement.style.display = 'block';
+                    startImageSlideShow();
+                }, 2000);
+            }
+        }, 1000);
+
+        function startImageSlideShow() {
+            slideImageElement.src = images[currentImageIndex];
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            wishDisplayElements.style.display = 'none';
+            setTimeout(() => {
+                if (imageSlideElement.style.display === 'block') {
+                    startImageSlideShow();
+                }
+            }, 2000);
+        }
+       
+
+        function showCake() {
+            imageSlideElement.style.display = 'none';
+            cakeContainerElement.style.display = 'block';
+            wishContainerElement.style.display = 'block';
+        }
+
+        function makeWish() {
+            const wish = document.getElementById('wish-input').value;
+            wishDisplayElement.innerText = "Your wish: " + wish + "!. AMEN";
+           
+            showWishSlideShow(wish);
+            
+        }
+       
+        function showWishSlideShow(wish) {
+            const wishs = document.getElementById('wish-input').value;
+            cakeContainerElement.style.display = 'none';
+            imageSlideElement.style.display = 'block';
+             slideImageElement.src = images[currentImageIndex];
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            loppElement.style.display = 'none';
+            wishDisplayElements.style.display = 'block';
+            wishDisplayElements.innerText = "Your wish: " + wishs + "!. AMEN";
+            showWishSlideShow();
+            setTimeout(() => {
+                location.reload();
+            }, 4000); // 1 minute
+        }
+    </script>
+</body>
+</html>
